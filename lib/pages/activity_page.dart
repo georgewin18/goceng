@@ -1,8 +1,39 @@
 import 'package:flutter/material.dart';
 import 'package:goceng/components/activity_card.dart';
+import 'package:goceng/db/db_helper.dart';
+import 'package:goceng/models/order.dart';
 
-class ActivityPage extends StatelessWidget {
+class ActivityPage extends StatefulWidget {
   const ActivityPage({super.key});
+
+  @override
+  State<ActivityPage> createState() => ActivityPageState();
+}
+
+class ActivityPageState extends State<ActivityPage> {
+  List<Order> orders = [];
+
+  @override
+  void initState() {
+    super.initState();
+    loadOrders();
+  }
+
+  Future<void> loadOrders() async {
+    final data = await DBHelper.getOrders();
+    setState(() {
+      orders = data.reversed.toList();
+    });
+  }
+
+  String getImageByService(String serviceType) {
+    if (serviceType.toLowerCase().contains("gocar")) {
+      return "assets/gocar.jpg";
+    } else if (serviceType.toLowerCase().contains("comfort")) {
+      return "assets/gojek_comfort.jpg";
+    }
+    return "assets/gojek.jpg"; // default GoRide
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -12,28 +43,20 @@ class ActivityPage extends StatelessWidget {
         backgroundColor: Colors.white,
         elevation: 0,
       ),
-      body: ListView(
+      body: orders.isEmpty
+          ? const Center(child: Text("Belum ada histori pesanan."))
+          : ListView.builder(
         padding: const EdgeInsets.all(16),
-        children: const [
-          ActivityCard(
-            dateTime: "21 Feb, 11:09",
-            title: "Adi Jasa",
-            price: "Rp27.000",
-            imagePath: "assets/gojek.jpeg"
-          ),
-          ActivityCard(
-            dateTime: "16 Feb, 14:01",
-            title: "Rumah Sakit Universitas Airlan...",
-            price: "Rp36.000",
-            imagePath: "assets/gocar.jpeg",
-          ),
-          ActivityCard(
-            dateTime: "15 Feb, 18:44",
-            title: "Rumah Sakit Universitas Airlan...",
-            price: "Rp36.000",
-            imagePath: "assets/gocar.jpeg",
-          ),
-        ]
+        itemCount: orders.length,
+        itemBuilder: (context, index) {
+          final order = orders[index];
+          return ActivityCard(
+            dateTime: order.dateTime,
+            title: order.destination,
+            price: "Rp ${order.price}",
+            imagePath: getImageByService(order.serviceType),
+          );
+        },
       ),
     );
   }
