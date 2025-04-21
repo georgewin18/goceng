@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
-import '../pages/onboarding_ride_page.dart';
+import 'onboarding_ride_page.dart';
 
 class RideLoadingPage extends StatefulWidget {
   const RideLoadingPage({super.key});
