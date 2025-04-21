@@ -31,12 +31,20 @@ class MainScreen extends StatefulWidget {
 class _MainScreenState extends State<MainScreen> {
   int _currentIndex = 0;
 
-  final List<Widget> _pages = [
-    const HomePage(),
-    const PromoPage(),
-    const ActivityPage(),
-    const ChatPage(),
-  ];
+  final GlobalKey<ActivityPageState> activityPageKey = GlobalKey<ActivityPageState>();
+
+  late final List<Widget> _pages;
+
+  @override
+  void initState() {
+    super.initState();
+    _pages = [
+      const HomePage(),
+      const PromoPage(),
+      ActivityPage(key: activityPageKey),
+      const ChatPage(),
+    ];
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -50,6 +58,10 @@ class _MainScreenState extends State<MainScreen> {
         onTap: (int index) {
           setState(() {
             _currentIndex = index;
+
+            if (index == 2) {
+              activityPageKey.currentState?.loadOrders();
+            }
           });
         },
       ),
