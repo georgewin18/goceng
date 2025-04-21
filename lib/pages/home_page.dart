@@ -3,6 +3,7 @@ import 'package:goceng/components/promo_card.dart';
 import 'package:goceng/components/search_bar.dart';
 import 'package:goceng/components/promo_banner.dart';
 import 'package:goceng/components/food_list.dart';
+import 'package:goceng/pages/ride_loading_page.dart';
 
 class HomePage extends StatelessWidget {
   const HomePage({super.key});
@@ -219,15 +220,25 @@ class HomePage extends StatelessWidget {
       ),
       itemCount: services.length,
       itemBuilder: (context, index) {
-        return Column(
-          children: [
-            CircleAvatar(
-              backgroundColor: Colors.green,
-              child: Icon(services[index]["icon"], color: Colors.grey.shade100),
-            ),
-            const SizedBox(height: 5),
-            Text(services[index]["label"], style: TextStyle(fontSize: 12, fontWeight: FontWeight.bold),)
-          ],
+        return GestureDetector(
+          onTap: () {
+            if (services[index]["label"] == "GoRide" || services[index]["label"] == "GoCar") {
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => RideLoadingPage()),
+              );
+            }
+          },
+          child: Column(
+            children: [
+              CircleAvatar(
+                backgroundColor: Colors.green,
+                child: Icon(services[index]["icon"], color: Colors.grey.shade100),
+              ),
+              const SizedBox(height: 5),
+              Text(services[index]["label"], style: TextStyle(fontSize: 12, fontWeight: FontWeight.bold),)
+            ],
+          )
         );
       }
     );
